@@ -5,9 +5,9 @@
   "scripts": {
     "serve": "webpack serve --open",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "build": "rimraf ./build && tsc",
-    "exec": "node build/main.js",
-    "build_exec": "npm run build && node build/main.js"
+    "build": "rimraf ./dist && tsc",
+    "exec": "node dist/main.js",
+    "build_exec": "npm run build && npm run exec"
   },
   "keywords": [],
   "author": "",
