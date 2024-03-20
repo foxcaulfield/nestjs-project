@@ -1,4 +1,4 @@
-import http from "node:http";
+import http from "http";
 
 const server = http.createServer((_req, res) => {
 	res.writeHead(200, { "Content-type": "text/plain" });
