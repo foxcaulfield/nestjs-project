@@ -1,7 +1,7 @@
 version: '3.8'
 services:
-  nestjs-app:
-    container_name: nestjs_cont
+  nestjs-dev:
+    container_name: nestjs_cont_dev
     build:
       context: .
       dockerfile: Dockerfile
@@ -12,3 +12,17 @@ services:
       - /usr/src/app/node_modules
     ports:
       - 3000:3000
+    command: npm run start:dev
+
+  nestjs-prod:
+    container_name: nestjs_cont_prod
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - NODE_ENV=production
+    volumes:
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    ports:
+      - 3001:3000
