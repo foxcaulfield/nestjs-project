@@ -1,6 +1,13 @@
 # Base image
 FROM node:22 as base
 
+# Set NODE_ENV variable
+ARG NODE_ENV
+ENV NODE_ENV=${NODE_ENV}
+
+# Echo NODE_ENV value during build
+RUN echo "NODE_ENV is set to: $NODE_ENV"
+
 # Create app directory
 WORKDIR /usr/src/app
 
