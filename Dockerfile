@@ -25,13 +25,13 @@ RUN npm run build
 
 EXPOSE 3000
 
-CMD [ "sh", "-c", "if [ \"$NODE_ENV\" = \"development\" ]; then npm run start:dev; else node dist/main.js; fi" ]
+# CMD [ "sh", "-c", "if [ \"$NODE_ENV\" = \"development\" ]; then npm run start:dev; else node dist/main.js; fi" ]
 
 # # Production stage
 # FROM base as production
 
 # # Start the server using the production build
-# CMD ["node", "dist/main.js"]
+CMD ["node", "dist/main.js"]
 
 # # Development stage
 # FROM base as development
