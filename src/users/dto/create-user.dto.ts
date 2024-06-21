@@ -7,6 +7,10 @@ export class CreateUserDto implements Prisma.UserCreateInput {
 	public username: string;
 
 	@IsString()
+	@IsNotEmpty()
+	public password: string;
+
+	@IsString()
 	@IsOptional()
 	public displayName?: string;
 }

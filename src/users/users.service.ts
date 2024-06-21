@@ -18,9 +18,7 @@ export class UsersService {
 	// 	return this.prismaOrmService.users.findMany();
 	// }
 
-	public async create(
-		createUserDto: Prisma.UserCreateInput,
-	): Promise<{ id: number; username: string; displayName: string }> {
+	public async create(createUserDto: Prisma.UserCreateInput): Promise<User> {
 		return this.prismaOrmService.user.create({
 			data: createUserDto,
 		});
@@ -32,9 +30,7 @@ export class UsersService {
 		return this.prismaOrmService.user.findMany();
 	}
 
-	public async findOne(
-		id: User["id"],
-	): Promise<{ id: number; username: string; displayName: string }> {
+	public async findOne(id: User["id"]): Promise<User> {
 		return this.prismaOrmService.user.findUnique({
 			where: { id },
 		});
@@ -43,7 +39,7 @@ export class UsersService {
 	public async update(
 		id: number,
 		updateUserDto: Prisma.UserUpdateInput,
-	): Promise<{ id: number; username: string; displayName: string }> {
+	): Promise<User> {
 		return this.prismaOrmService.user.update({
 			where: { id },
 			data: updateUserDto,
