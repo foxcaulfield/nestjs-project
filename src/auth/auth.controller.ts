@@ -26,10 +26,7 @@ export class AuthController {
 			}),
 		)
 		registerDto: Prisma.UserCreateInput,
-	): Promise<{
-		data: { id: number; username: string; displayName: string };
-		token: string;
-	}> {
+	): Promise<{ token: string }> {
 		console.log("register", registerDto);
 		return await this.authService.register(registerDto);
 	}

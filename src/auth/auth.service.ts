@@ -38,20 +38,22 @@ export class AuthService {
 		};
 	}
 
-	public async register(createDto: Prisma.UserCreateInput): Promise<{
-		data: { id: number; username: string; displayName: string };
-		token: string;
-	}> {
+	public async register(
+		createDto: Prisma.UserCreateInput,
+	): Promise<{ token: string }> {
 		console.log("auth service register", createDto);
 
 		createDto.password = await bcrypt.hash(createDto.password, 10);
 		const creationResult = await this.usersService.create(createDto);
 
-		const payload: SignPayloadDto = { username: creationResult.username };
+		const payload: SignPayloadDto = {
+			id: creationResult.id,
+			username: creationResult.username,
+			displayName: creationResult.displayName,
+		};
 
 		return {
-			data: creationResult,
-			token: this.jwtService.sign(payload),
+			token: this.jwtService.sign(payload, { algorithm: "HS256" }),
 		};
 	}
 
