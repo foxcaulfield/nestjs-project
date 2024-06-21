@@ -14,6 +14,8 @@ services:
     #   - /usr/src/app/node_modules
     ports:
       - 3001:3000
+    profiles:
+      - prod
 
   postgres-dev:
     image: postgres:16
@@ -36,7 +38,7 @@ services:
     #   - nestjs-dev
 
   nestjs-dev:
-    image: nestjs_img:0.0.1
+    image: nestjs_img:0.0.2
     container_name: nestjs_dev_cont
     env_file:
       - .env.development.local

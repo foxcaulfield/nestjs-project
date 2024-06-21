@@ -10,7 +10,7 @@ export class PrismaOrmService
 		try {
 			return await this.$connect();
 		} catch (error) {
-			console.log("Error occured during connection to DB");
+			console.log("Error occured during connection to DB", error);
 		}
 	}
 
