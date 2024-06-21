@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
-import { Prisma } from "@prisma/client";
+import { Prisma, User } from "@prisma/client";
 import * as bcrypt from "bcrypt";
 import { UsersService } from "src/users/users.service";
 import { AuthPayloadDto } from "./dto/auth-payload.dto";
@@ -16,24 +16,18 @@ export class AuthService {
 		private readonly usersService: UsersService,
 	) {}
 
-	public async login(loginDto: AuthPayloadDto): Promise<{
-		data: { id: number; username: string; displayName: string };
-		token: string;
-	}> {
+	public async login(loginDto: AuthPayloadDto): Promise<{ token: string }> {
 		console.log("auth service login", loginDto);
 		const { username, password } = loginDto;
 
-		const { password: _, ...validationResult } = await this.validateUser({
+		const user = await this.validateUser({
 			username,
 			password,
 		});
 
-		_ && null; // just because
-
-		const payload: SignPayloadDto = { username };
+		const payload: SignPayloadDto = { username, id: user.id };
 
 		return {
-			data: validationResult,
 			token: this.jwtService.sign(payload),
 		};
 	}
@@ -49,7 +43,6 @@ export class AuthService {
 		const payload: SignPayloadDto = {
 			id: creationResult.id,
 			username: creationResult.username,
-			displayName: creationResult.displayName,
 		};
 
 		return {
@@ -57,12 +50,10 @@ export class AuthService {
 		};
 	}
 
-	public async validateUser({ username, password }: AuthPayloadDto): Promise<{
-		id: number;
-		username: string;
-		password: string;
-		displayName: string;
-	}> {
+	public async validateUser({
+		username,
+		password,
+	}: AuthPayloadDto): Promise<User> {
 		const user = await this.prismaOrmService.user.findUnique({
 			where: { username },
 		});

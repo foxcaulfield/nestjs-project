@@ -42,10 +42,7 @@ export class AuthController {
 			}),
 		)
 		loginDto: AuthPayloadDto,
-	): Promise<{
-		data: { id: number; username: string; displayName: string };
-		token: string;
-	}> {
+	): Promise<{ token: string }> {
 		console.log("login", loginDto);
 		return await this.authService.login(loginDto);
 	}
