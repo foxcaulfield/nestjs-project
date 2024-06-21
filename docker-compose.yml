@@ -1,14 +1,49 @@
 version: '3.8'
 services:
-  nestjs-prod:
-    container_name: nestjs_cont_prod
+  # nestjs-prod:
+  #   container_name: nestjs_cont_prod
+  #   build:
+  #     context: .
+  #     dockerfile: Dockerfile
+  #   environment:
+  #     - NODE_ENV=production
+  #   volumes:
+  #     - .:/usr/src/app
+  #     - /usr/src/app/node_modules
+  #   ports:
+  #     - 3001:3000
+
+  nestjs-dev:
+    container_name: nestjs_cont_dev
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.development.local
+    image: nestjs_img:0.0.1
     environment:
-      - NODE_ENV=production
+      - NODE_ENV=development
+    env_file:
+      - .env.development.local
     volumes:
       - .:/usr/src/app
       - /usr/src/app/node_modules
     ports:
-      - 3001:3000
+      - 3000:3000
+    depends_on:
+      - postgres-dev
+    networks:
+      - dev_network
+
+  postgres-dev:
+    image: postgres:16
+    container_name: postgres_cont_dev
+    restart: always
+    env_file:
+      - .env.development.local
+    ports:
+      - "9999:5432"
+    networks:
+      - dev_network
+
+networks:
+  dev_network:
+    driver: bridge
