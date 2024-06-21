@@ -1,23 +1,25 @@
 version: '3.8'
 services:
-  # nestjs-prod:
-  #   container_name: nestjs_cont_prod
-  #   build:
-  #     context: .
-  #     dockerfile: Dockerfile
-  #   environment:
-  #     - NODE_ENV=production
-  #   volumes:
-  #     - .:/usr/src/app
-  #     - /usr/src/app/node_modules
-  #   ports:
-  #     - 3001:3000
+  nestjs-prod:
+    container_name: nestjs_cont_prod
+    env_file:
+      - .env.development.local
+    build:
+      context: .
+      dockerfile: Dockerfile
+    environment:
+      - NODE_ENV=production
+    # volumes:
+    #   - .:/usr/src/app
+    #   - /usr/src/app/node_modules
+    ports:
+      - 3001:3000
 
   postgres-dev:
     image: postgres:16
     container_name: postgres_dev_cont
     env_file:
-      - .env
+      - .env.development.local
     ports:
       - "9999:5432"
     restart: always
@@ -37,12 +39,12 @@ services:
     image: nestjs_img:0.0.1
     container_name: nestjs_dev_cont
     env_file:
-      - .env
+      - .env.development.local
     ports:
       - 3000:3000
     build:
       context: .
-      dockerfile: Dockerfile
+      dockerfile: Dockerfile.development.local
     volumes:
       - .:/usr/src/app
       - /usr/src/app/node_modules

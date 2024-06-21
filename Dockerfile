@@ -14,10 +14,9 @@ RUN npm install
 COPY . .
 
 # Creates a "dist" folder with the production build
+RUN npx prisma generate
 RUN npm run build
 
 EXPOSE 3000
-
-# # Start the server using the production build
-CMD ["node", "dist/main.js"]
+CMD ["npm", "run", "start:prod"]
 
