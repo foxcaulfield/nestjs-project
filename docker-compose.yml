@@ -13,41 +13,49 @@ services:
   #   ports:
   #     - 3001:3000
 
-  nestjs-dev:
-    image: nestjs_img:0.0.1
-    container_name: nestjs_dev_cont
-    env_file:
-      - .env.development.local
-    ports:
-      - 3000:3000
-    networks:
-      - dev_network
-    build:
-      context: .
-      dockerfile: Dockerfile.development.local
-    volumes:
-      - .:/usr/src/app
-      - /usr/src/app/node_modules
-    depends_on:
-      - postgres-dev
-
   postgres-dev:
     image: postgres:16
     container_name: postgres_dev_cont
     env_file:
-      - .env.development.local
+      - .env
     ports:
       - "9999:5432"
-    networks:
-      - dev_network
     restart: always
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U postgres"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+    # networks:
+    #   - dev_network
+    # volumes:
+    #   - postgres_db:/var/lib/postgresql/data
+    # depends_on:
+    #   - nestjs-dev
+
+  nestjs-dev:
+    image: nestjs_img:0.0.1
+    container_name: nestjs_dev_cont
+    env_file:
+      - .env
+    ports:
+      - 3000:3000
+    build:
+      context: .
+      dockerfile: Dockerfile
     volumes:
-      - postgres_db:/var/lib/postgresql/data
+      - .:/usr/src/app
+      - /usr/src/app/node_modules
+    depends_on:
+      postgres-dev:
+        condition: service_healthy
+    # networks:
+    #   - dev_network
 
-networks:
-  dev_network:
-    driver: bridge
+# networks:
+#   dev_network:
+#     driver: bridge
 
-volumes:
-  postgres_db:
-    driver: local
+# volumes:
+#   postgres_db:
+#     driver: local
