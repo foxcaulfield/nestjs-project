@@ -5,12 +5,24 @@ import { AppService } from "./app.service";
 import { UsersModule } from "./users/users.module";
 import { AuthModule } from "./auth/auth.module";
 import { LogMiddleware } from "./middlewares/log.middleware";
-import { APP_INTERCEPTOR } from "@nestjs/core";
+import { APP_GUARD, APP_INTERCEPTOR } from "@nestjs/core";
 import { InteractionInterceptor } from "./interceptors/interaction.interceptor";
 import { SystemModule } from "./system/system.module";
+import { ThrottlerGuard, ThrottlerModule } from "@nestjs/throttler";
+import { ConfigModule } from "@nestjs/config";
 
 @Module({
-	imports: [UsersModule, AuthModule],
+	imports: [
+		UsersModule,
+		AuthModule,
+		ConfigModule.forRoot(),
+		ThrottlerModule.forRoot([
+			{
+				ttl: 60000,
+				limit: 3,
+			},
+		]),
+	],
 	controllers: [AppController],
 	providers: [
 		SystemModule,
@@ -19,6 +31,10 @@ import { SystemModule } from "./system/system.module";
 			provide: APP_INTERCEPTOR,
 			useClass: InteractionInterceptor,
 			scope: Scope.REQUEST,
+		},
+		{
+			provide: APP_GUARD,
+			useClass: ThrottlerGuard,
 		},
 	],
 })
