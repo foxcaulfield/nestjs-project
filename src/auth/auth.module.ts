@@ -9,6 +9,7 @@ import { UsersService } from "src/users/users.service";
 import { JwtStrategy } from "./strategies/jwt.strategy";
 import { LocalStrategy } from "./strategies/local.strategy";
 import { PrismaOrmService } from "src/prisma-orm/prisma-orm.service";
+import { RequestSessionService } from "src/per-request/request-session.service";
 
 @Module({
 	controllers: [AuthController],
@@ -18,6 +19,7 @@ import { PrismaOrmService } from "src/prisma-orm/prisma-orm.service";
 		UsersService,
 		LocalStrategy,
 		JwtStrategy,
+		RequestSessionService,
 	],
 	imports: [
 		UsersModule,
