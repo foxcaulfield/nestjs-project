@@ -7,40 +7,31 @@ import {
 	Param,
 	ParseIntPipe,
 	Patch,
-	Post,
+	// Post,
 	UseGuards,
 	UsePipes,
 	ValidationPipe,
 } from "@nestjs/common";
 import { JwtAuthGuard } from "src/auth/guards/jwt.guard";
-import { CreateUserDto } from "./dto/create-user.dto";
+// import { CreateUserDto } from "./dto/create-user.dto";
 import { UsersService } from "./users.service";
 import { UpdateUserDto } from "./dto/update-user.dto";
+import { SafeUserDto } from "./dto/safe-user.dto";
 
 @Controller("users")
 @UseGuards(JwtAuthGuard)
 export class UsersController {
 	public constructor(private readonly usersService: UsersService) {}
 
-	@Post()
-	@UsePipes(ValidationPipe)
-	public create(
-		@Body() createUserDto: CreateUserDto,
-	): Promise<{ id: number; username: string; displayName: string }> {
-		return this.usersService.create(createUserDto);
-	}
-
 	@Get()
-	public findAll(): Promise<
-		{ id: number; username: string; displayName: string }[]
-	> {
+	public findAll(): Promise<SafeUserDto[]> {
 		return this.usersService.findAll();
 	}
 
 	@Get(":id")
 	public async findOne(
 		@Param("id", ParseIntPipe) id: number,
-	): Promise<{ id: number; username: string; displayName: string }> {
+	): Promise<SafeUserDto> {
 		const user = await this.usersService.findOne(id);
 
 		if (!user) {
@@ -50,42 +41,26 @@ export class UsersController {
 		return user;
 	}
 
-	/* */
 	@Patch(":id")
+	@UsePipes(ValidationPipe)
 	public update(
-		@Param("id") id: string,
+		@Param("id", ParseIntPipe) id: number,
 		@Body() updateUserDto: UpdateUserDto,
-	): Promise<{ id: number; username: string; displayName: string }> {
-		return this.usersService.update(+id, updateUserDto);
+	): Promise<SafeUserDto> {
+		return this.usersService.update(id, updateUserDto);
 	}
 
 	@Delete(":id")
-	public remove(@Param("id") id: string): Promise<string> {
-		return this.usersService.remove(+id);
+	public remove(@Param("id") id: number): Promise<SafeUserDto> {
+		return this.usersService.remove(id);
 	}
-	/* */
 
-	// @Get()
-	// public async findAll(): Promise<Users[]> {
-	// 	return await this.usersService.findAll();
+	/* */
+	// @Post()
+	// @UsePipes(ValidationPipe)
+	// public create(
+	// 	@Body() createUserDto: CreateUserDto,
+	// ): Promise<{ id: number; username: string; displayName: string }> {
+	// 	return this.usersService.create(createUserDto);
 	// }
 }
-// @Post()
-// create(@Body() createUserDto: CreateUserDto) {
-//   return this.usersService.create(createUserDto);
-// }
-
-// @Get(':id')
-// findOne(@Param('id') id: string) {
-//   return this.usersService.findOne(+id);
-// }
-
-// @Patch(':id')
-// update(@Param('id') id: string, @Body() updateUserDto: UpdateUserDto) {
-//   return this.usersService.update(+id, updateUserDto);
-// }
-
-// @Delete(':id')
-// remove(@Param('id') id: string) {
-//   return this.usersService.remove(+id);
-// }
