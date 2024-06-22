@@ -51,7 +51,7 @@ export class UsersController {
 	}
 
 	@Delete(":id")
-	public remove(@Param("id") id: number): Promise<SafeUserDto> {
+	public remove(@Param("id", ParseIntPipe) id: number): Promise<SafeUserDto> {
 		return this.usersService.remove(id);
 	}
 
