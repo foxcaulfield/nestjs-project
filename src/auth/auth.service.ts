@@ -6,7 +6,6 @@ import { UsersService } from "src/users/users.service";
 import { AuthPayloadDto } from "./dto/auth-payload.dto";
 import { SignPayloadDto } from "./dto/sign-payload.dto";
 import { PrismaOrmService } from "src/prisma-orm/prisma-orm.service";
-// import { CreateUserDto } from '../users/dto/create-user.dto';
 
 @Injectable()
 export class AuthService {
@@ -17,15 +16,14 @@ export class AuthService {
 	) {}
 
 	public async login(loginDto: AuthPayloadDto): Promise<{ token: string }> {
-		console.log("auth service login", loginDto);
 		const { username, password } = loginDto;
 
-		const user = await this.validateUser({
+		const userId = await this.validateUser({
 			username,
 			password,
 		});
 
-		const payload: SignPayloadDto = { username, id: user.id };
+		const payload: SignPayloadDto = { username, id: userId };
 
 		return {
 			token: this.jwtService.sign(payload),
@@ -35,8 +33,6 @@ export class AuthService {
 	public async register(
 		createDto: Prisma.UserCreateInput,
 	): Promise<{ token: string }> {
-		console.log("auth service register", createDto);
-
 		createDto.password = await bcrypt.hash(createDto.password, 10);
 		const creationResult = await this.usersService.create(createDto);
 
@@ -53,22 +49,22 @@ export class AuthService {
 	public async validateUser({
 		username,
 		password,
-	}: AuthPayloadDto): Promise<User> {
+	}: AuthPayloadDto): Promise<User["id"]> {
 		const user = await this.prismaOrmService.user.findUnique({
 			where: { username },
 		});
 
 		if (!user) {
-			throw new NotFoundException("user not found");
+			throw new NotFoundException("Invalid credentials");
 		}
 
 		const validatePassword = await bcrypt.compare(password, user.password);
 
 		if (!validatePassword) {
-			throw new NotFoundException("Invalid password");
+			throw new NotFoundException("Invalid credentials");
 		}
 
-		return user;
+		return user.id;
 	}
 }
 
