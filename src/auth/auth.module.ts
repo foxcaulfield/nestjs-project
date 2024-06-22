@@ -8,20 +8,24 @@ import { JwtModule } from "@nestjs/jwt";
 import { UsersService } from "src/users/users.service";
 import { JwtStrategy } from "./strategies/jwt.strategy";
 import { LocalStrategy } from "./strategies/local.strategy";
-import { PrismaOrmService } from "src/prisma-orm/prisma-orm.service";
-import { RequestSessionService } from "src/per-request/request-session.service";
+// import { PrismaOrmService } from "src/system/prisma-orm.service";
+import { SystemModule } from "src/system/system.module";
+// import { RequestSessionService } from "src/request-session/request-session.service";
+// import { RequestSessionService } from "src/request-session/request-session.service";
 
 @Module({
 	controllers: [AuthController],
 	providers: [
 		AuthService,
-		PrismaOrmService,
 		UsersService,
 		LocalStrategy,
 		JwtStrategy,
-		RequestSessionService,
+		// SystemModule,
+		// PrismaOrmService,
+		// RequestSessionService,
 	],
 	imports: [
+		SystemModule,
 		UsersModule,
 		PassportModule,
 		JwtModule.register({

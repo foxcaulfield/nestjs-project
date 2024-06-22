@@ -5,7 +5,7 @@ import * as bcrypt from "bcrypt";
 import { UsersService } from "src/users/users.service";
 import { AuthPayloadDto } from "./dto/auth-payload.dto";
 import { SignPayloadDto } from "./dto/sign-payload.dto";
-import { PrismaOrmService } from "src/prisma-orm/prisma-orm.service";
+import { PrismaOrmService } from "src/system/prisma-orm.service";
 
 @Injectable()
 export class AuthService {

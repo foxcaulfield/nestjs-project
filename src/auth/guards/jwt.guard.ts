@@ -1,7 +1,7 @@
 import { ExecutionContext, Inject, Injectable, Logger } from "@nestjs/common";
 import { AuthGuard } from "@nestjs/passport";
 import { Observable } from "rxjs";
-import { RequestSessionService } from "../../request-session/request-session.service";
+import { RequestSessionService } from "../../system/request-session.service";
 
 @Injectable()
 export class JwtAuthGuard extends AuthGuard("jwt") {

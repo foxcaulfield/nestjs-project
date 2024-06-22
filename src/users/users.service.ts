@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 import { Prisma, User } from "@prisma/client";
-import { PrismaOrmService } from "src/prisma-orm/prisma-orm.service";
+import { PrismaOrmService } from "src/system/prisma-orm.service";
 import { SafeUserDto, SafeUserSelectArgs } from "./dto/safe-user.dto";
 
 @Injectable()
