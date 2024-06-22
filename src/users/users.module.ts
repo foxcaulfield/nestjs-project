@@ -8,6 +8,6 @@ import { SystemModule } from "src/system/system.module";
 @Module({
 	imports: [SystemModule],
 	controllers: [UsersController],
-	providers: [UsersService, SystemModule],
+	providers: [UsersService],
 })
 export class UsersModule {}

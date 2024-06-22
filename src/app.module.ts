@@ -7,7 +7,6 @@ import { AuthModule } from "./auth/auth.module";
 import { LogMiddleware } from "./middlewares/log.middleware";
 import { APP_INTERCEPTOR } from "@nestjs/core";
 import { InteractionInterceptor } from "./interceptors/interaction.interceptor";
-// import { RequestSessionService } from "./system/request-session.service";
 import { SystemModule } from "./system/system.module";
 
 @Module({
@@ -16,13 +15,11 @@ import { SystemModule } from "./system/system.module";
 	providers: [
 		SystemModule,
 		AppService,
-		// PrismaOrmService,
 		{
 			provide: APP_INTERCEPTOR,
 			useClass: InteractionInterceptor,
 			scope: Scope.REQUEST,
 		},
-		// RequestSessionService,
 	],
 })
 export class AppModule implements NestModule {
