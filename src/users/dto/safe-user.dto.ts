@@ -16,10 +16,7 @@ type SafeType<T, SafeKeys extends keyof T> = ValidateKeys<
 	Pick<T, SafeKeys>
 >;
 
-export type SafeUserDto = SafeType<
-	User,
-	"id" | "username" | "displayName" | "role"
->;
+export type SafeUserDto = SafeType<User, "id" | "username" | "displayName">;
 
 type SafeUserKeys = {
 	[K in keyof SafeUserDto]: true;
@@ -29,7 +26,6 @@ export const SafeUserSelectArgs: SafeUserKeys = {
 	id: true,
 	username: true,
 	displayName: true,
-	role: true,
 };
 
 export const toSafeUser = (user: User): SafeUserDto => {
@@ -37,6 +33,5 @@ export const toSafeUser = (user: User): SafeUserDto => {
 		id: user.id,
 		username: user.username,
 		displayName: user.displayName,
-		role: user.role,
 	};
 };
