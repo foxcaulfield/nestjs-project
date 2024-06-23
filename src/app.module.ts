@@ -9,17 +9,26 @@ import { APP_GUARD, APP_INTERCEPTOR } from "@nestjs/core";
 import { InteractionInterceptor } from "./interceptors/interaction.interceptor";
 import { SystemModule } from "./system/system.module";
 import { ThrottlerGuard, ThrottlerModule } from "@nestjs/throttler";
-import { ConfigModule } from "@nestjs/config";
 
 @Module({
 	imports: [
 		UsersModule,
 		AuthModule,
-		ConfigModule.forRoot(),
 		ThrottlerModule.forRoot([
 			{
-				ttl: 60000,
+				name: "short",
+				ttl: 1000,
 				limit: 3,
+			},
+			{
+				name: "medium",
+				ttl: 10000,
+				limit: 20,
+			},
+			{
+				name: "long",
+				ttl: 60000,
+				limit: 100,
 			},
 		]),
 	],
@@ -39,6 +48,9 @@ import { ConfigModule } from "@nestjs/config";
 	],
 })
 export class AppModule implements NestModule {
+	public constructor() {
+		console.log(process.env);
+	}
 	public configure(consumer: MiddlewareConsumer): void {
 		consumer.apply(LogMiddleware).forRoutes("*");
 	}
