@@ -6,7 +6,7 @@
   "private": true,
   "license": "UNLICENSED",
   "scripts": {
-    "prisma:dev": "dotenv -e .env.development.local -- prisma generate",
+    "prisma:dev": "dotenv -e .env.development.local -- prisma generate && prisma migrate dev",
     "prisma:prod": "dotenv -e .env.production -- prisma generate",
     "build": "nest build",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
