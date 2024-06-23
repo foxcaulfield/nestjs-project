@@ -8,10 +8,17 @@ import { UsersService } from "src/users/users.service";
 import { JwtStrategy } from "./strategies/jwt.strategy";
 import { LocalStrategy } from "./strategies/local.strategy";
 import { SystemModule } from "src/system/system.module";
+import { RolesGuard } from "./guards/roles.guard";
 
 @Module({
 	controllers: [AuthController],
-	providers: [AuthService, UsersService, LocalStrategy, JwtStrategy],
+	providers: [
+		AuthService,
+		UsersService,
+		LocalStrategy,
+		JwtStrategy,
+		RolesGuard,
+	],
 	imports: [
 		SystemModule,
 		PassportModule,

@@ -17,6 +17,9 @@ import { JwtAuthGuard } from "src/auth/guards/jwt.guard";
 import { UsersService } from "./users.service";
 import { UpdateUserDto } from "./dto/update-user.dto";
 import { SafeUserDto } from "./dto/safe-user.dto";
+import { Roles } from "src/auth/decorators/roles.decorator";
+import { Role } from "@prisma/client";
+import { RolesGuard } from "src/auth/guards/roles.guard";
 
 @Controller("users")
 @UseGuards(JwtAuthGuard)
@@ -41,6 +44,8 @@ export class UsersController {
 		return user;
 	}
 
+	@Roles(Role.ADMIN)
+	@UseGuards(RolesGuard)
 	@Patch(":id")
 	@UsePipes(ValidationPipe)
 	public update(
@@ -50,6 +55,8 @@ export class UsersController {
 		return this.usersService.update(id, updateUserDto);
 	}
 
+	@Roles(Role.ADMIN)
+	@UseGuards(RolesGuard)
 	@Delete(":id")
 	public remove(@Param("id", ParseIntPipe) id: number): Promise<SafeUserDto> {
 		return this.usersService.remove(id);
