@@ -1,6 +1,6 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
-import { Prisma, User } from "@prisma/client";
+import { Prisma } from "@prisma/client";
 import * as bcrypt from "bcrypt";
 import { UsersService } from "src/users/users.service";
 import { AuthPayloadDto } from "./dto/auth-payload.dto";
@@ -16,14 +16,12 @@ export class AuthService {
 	) {}
 
 	public async login(loginDto: AuthPayloadDto): Promise<{ token: string }> {
-		const { username, password } = loginDto;
-
-		const userId = await this.validateUser({
-			username,
-			password,
+		const { id, username, role } = await this.validateUser({
+			username: loginDto.username,
+			password: loginDto.password,
 		});
 
-		const payload: SignPayloadDto = { username, id: userId };
+		const payload: SignPayloadDto = { id, username, role };
 
 		return {
 			token: this.jwtService.sign(payload),
@@ -34,12 +32,11 @@ export class AuthService {
 		createDto: Prisma.UserCreateInput,
 	): Promise<{ token: string }> {
 		createDto.password = await bcrypt.hash(createDto.password, 10);
-		const creationResult = await this.usersService.create(createDto);
 
-		const payload: SignPayloadDto = {
-			id: creationResult.id,
-			username: creationResult.username,
-		};
+		const { id, username, role } =
+			await this.usersService.create(createDto);
+
+		const payload: SignPayloadDto = { id, username, role };
 
 		return {
 			token: this.jwtService.sign(payload, { algorithm: "HS256" }),
@@ -47,24 +44,29 @@ export class AuthService {
 	}
 
 	public async validateUser({
-		username,
-		password,
-	}: AuthPayloadDto): Promise<User["id"]> {
+		username: usernameParam,
+		password: passwordParam,
+	}: AuthPayloadDto): Promise<SignPayloadDto> {
 		const user = await this.prismaOrmService.user.findUnique({
-			where: { username },
+			where: { username: usernameParam },
 		});
 
 		if (!user) {
 			throw new NotFoundException("Invalid credentials");
 		}
 
-		const validatePassword = await bcrypt.compare(password, user.password);
+		const validatePassword = await bcrypt.compare(
+			passwordParam,
+			user.password,
+		);
 
 		if (!validatePassword) {
 			throw new NotFoundException("Invalid credentials");
 		}
 
-		return user.id;
+		const { id, username, role } = user;
+
+		return { id, username, role };
 	}
 }
 
