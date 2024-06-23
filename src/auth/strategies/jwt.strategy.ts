@@ -14,9 +14,15 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
 		});
 	}
 
-	public async validate(
-		userDto: SignPayloadDto,
-	): Promise<{ username: User["username"]; id: User["id"] }> {
-		return { username: userDto.username, id: userDto.id };
+	public async validate(userDto: SignPayloadDto): Promise<{
+		username: User["username"];
+		id: User["id"];
+		role: User["role"];
+	}> {
+		return {
+			username: userDto.username,
+			id: userDto.id,
+			role: userDto.role,
+		};
 	}
 }
