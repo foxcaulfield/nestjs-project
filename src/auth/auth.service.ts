@@ -6,6 +6,7 @@ import { UsersService } from "src/users/users.service";
 import { AuthPayloadDto } from "./dto/auth-payload.dto";
 import { SignPayloadDto } from "./dto/sign-payload.dto";
 import { PrismaOrmService } from "src/system/prisma-orm.service";
+import { SafeUserDto } from "src/users/dto/safe-user.dto";
 
 @Injectable()
 export class AuthService {
@@ -16,12 +17,15 @@ export class AuthService {
 	) {}
 
 	public async login(loginDto: AuthPayloadDto): Promise<{ token: string }> {
-		const { id, username, role } = await this.validateUser({
+		const validatedUser: SignPayloadDto = await this.validateUser({
 			username: loginDto.username,
 			password: loginDto.password,
 		});
 
-		const payload: SignPayloadDto = { id, username, role };
+		const payload: SignPayloadDto = {
+			id: validatedUser.id,
+			username: validatedUser.username,
+		};
 
 		return {
 			token: this.jwtService.sign(payload),
@@ -33,13 +37,16 @@ export class AuthService {
 	): Promise<{ token: string }> {
 		createDto.password = await bcrypt.hash(createDto.password, 10);
 
-		const { id, username, role } =
+		const createdUser: SafeUserDto =
 			await this.usersService.create(createDto);
 
-		const payload: SignPayloadDto = { id, username, role };
+		const payload: SignPayloadDto = {
+			id: createdUser.id,
+			username: createdUser.username,
+		};
 
 		return {
-			token: this.jwtService.sign(payload, { algorithm: "HS256" }),
+			token: this.jwtService.sign(payload),
 		};
 	}
 
@@ -64,9 +71,7 @@ export class AuthService {
 			throw new NotFoundException("Invalid credentials");
 		}
 
-		const { id, username, role } = user;
-
-		return { id, username, role };
+		return { id: user.id, username: user.username };
 	}
 }
 
