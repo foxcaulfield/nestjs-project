@@ -44,6 +44,6 @@
   ],
   "workspaceLayout": {
     "appsDir": "apps",
-    "libsDir": "lib"
+    "libsDir": "libs"
   }
 }
